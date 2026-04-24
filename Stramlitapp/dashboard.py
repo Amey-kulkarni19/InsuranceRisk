@@ -25,29 +25,30 @@ except Exception as e:
 # -----------------------
 st.sidebar.header("Filters")
 
+# Step 1: DRG
 selected_drg = st.sidebar.selectbox(
     "Procedure",
     sorted(df["drg_definition"].dropna().unique())
 )
+drg_df = df[df["drg_definition"] == selected_drg]
 
-filtered_df = df[df["drg_definition"] == selected_drg]
+# Step 2: State — options derived from DRG selection
+state_options = sorted(drg_df["provider_state"].dropna().unique())
+selected_state = st.sidebar.selectbox("State", state_options)
+state_df = drg_df[drg_df["provider_state"] == selected_state]
 
-selected_state = st.sidebar.selectbox(
-    "State",
-    sorted(filtered_df["provider_state"].dropna().unique())
-)
+# Step 3: Provider — options derived from DRG + State
+provider_options = sorted(state_df["provider_name"].dropna().unique())
+selected_provider = st.sidebar.selectbox("Provider", provider_options)
 
-filtered_df = filtered_df[filtered_df["provider_state"] == selected_state]
+filtered_df = state_df[state_df["provider_name"] == selected_provider]
 
-selected_provider = st.sidebar.selectbox(
-    "Provider",
-    sorted(filtered_df["provider_name"].dropna().unique())
-)
+# Guard: if the cascade leaves nothing, stop gracefully
+if filtered_df.empty:
+    st.warning("No data available for this combination. Please adjust your filters.")
+    st.stop()
 
-provider_data = filtered_df[
-    filtered_df["provider_name"] == selected_provider
-].iloc[0]
-
+provider_data = filtered_df.iloc[0]
 # -----------------------
 # Risk color
 # -----------------------
