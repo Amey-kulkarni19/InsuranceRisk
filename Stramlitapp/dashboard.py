@@ -4,22 +4,26 @@ from pathlib import Path
 
 st.set_page_config(page_title="Healthcare Financial Risk Dashboard", layout="wide")
 
-BASE_DIR = Path(__file__).resolve().parent
-REPO_DIR = BASE_DIR.parent
-DATA_PATH_1 = BASE_DIR / "final_dashboard_data.parquet"
-DATA_PATH_2 = REPO_DIR / "final_dashboard_data.parquet"
+@st.cache_data
+def load_data():
+    BASE_DIR = Path(__file__).resolve().parent
+    REPO_DIR = BASE_DIR.parent
+    DATA_PATH_1 = BASE_DIR / "final_dashboard_data.parquet"
+    DATA_PATH_2 = REPO_DIR / "final_dashboard_data.parquet"
 
-try:
     if DATA_PATH_1.exists():
-        df = pd.read_parquet(DATA_PATH_1)
+        return pd.read_parquet(DATA_PATH_1)
     elif DATA_PATH_2.exists():
-        df = pd.read_parquet(DATA_PATH_2)
+        return pd.read_parquet(DATA_PATH_2)
     else:
-        st.error("Parquet file not found in either candidate path.")
-        st.stop()
-except Exception as e:
-    st.exception(e)
+        return None
+
+df = load_data()
+
+if df is None:
+    st.error("Parquet file not found.")
     st.stop()
+
 # -----------------------
 # Sidebar filters
 # -----------------------
