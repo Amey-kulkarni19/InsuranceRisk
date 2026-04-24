@@ -9,28 +9,33 @@ REPO_DIR = BASE_DIR.parent
 DATA_PATH_1 = BASE_DIR / "final_dashboard_data.parquet"
 DATA_PATH_2 = REPO_DIR / "final_dashboard_data.parquet"
 
-st.write("Running file:", __file__)
-st.write("Base dir:", str(BASE_DIR))
-st.write("Repo dir:", str(REPO_DIR))
-st.write("Base dir files:", [p.name for p in BASE_DIR.iterdir()])
-st.write("Repo dir files:", [p.name for p in REPO_DIR.iterdir()])
-st.write("Candidate path 1:", str(DATA_PATH_1), DATA_PATH_1.exists())
-st.write("Candidate path 2:", str(DATA_PATH_2), DATA_PATH_2.exists())
-
-@st.cache_data
-def load_data():
-    if DATA_PATH_1.exists():
-        return pd.read_parquet(DATA_PATH_1)
-    if DATA_PATH_2.exists():
-        return pd.read_parquet(DATA_PATH_2)
-    raise FileNotFoundError(
-        f"Could not find final_dashboard_data.parquet in either {DATA_PATH_1} or {DATA_PATH_2}"
-    )
+st.title("Debug info")
+st.code(
+    "\n".join([
+        f"__file__ = {__file__}",
+        f"BASE_DIR = {BASE_DIR}",
+        f"REPO_DIR = {REPO_DIR}",
+        f"DATA_PATH_1 = {DATA_PATH_1}",
+        f"DATA_PATH_1 exists = {DATA_PATH_1.exists()}",
+        f"DATA_PATH_2 = {DATA_PATH_2}",
+        f"DATA_PATH_2 exists = {DATA_PATH_2.exists()}",
+        f"BASE_DIR files = {[p.name for p in BASE_DIR.iterdir()]}",
+        f"REPO_DIR files = {[p.name for p in REPO_DIR.iterdir()]}",
+    ])
+)
 
 try:
-    df = load_data()
+    if DATA_PATH_1.exists():
+        df = pd.read_parquet(DATA_PATH_1)
+        st.success(f"Loaded from DATA_PATH_1 with shape {df.shape}")
+    elif DATA_PATH_2.exists():
+        df = pd.read_parquet(DATA_PATH_2)
+        st.success(f"Loaded from DATA_PATH_2 with shape {df.shape}")
+    else:
+        st.error("Parquet file not found in either candidate path.")
+        st.stop()
 except Exception as e:
-    st.error(f"Load failed: {type(e).__name__}: {e}")
+    st.exception(e)
     st.stop()
 # -----------------------
 # Sidebar filters
