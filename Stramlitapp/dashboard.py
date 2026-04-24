@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from pathlib as path
+from pathlib import path
 
 st.set_page_config(page_title="Healthcare Financial Risk Dashboard", layout="wide")
 
