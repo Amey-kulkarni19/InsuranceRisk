@@ -1,14 +1,18 @@
 import streamlit as st
 import pandas as pd
+from pathlib as path
 
 st.set_page_config(page_title="Healthcare Financial Risk Dashboard", layout="wide")
 
 # -----------------------
-# Load data (fast)
+# Load Data
 # -----------------------
+BASE_DIR = Path(__file__).resolve().parent
+DATA_PATH = BASE_DIR / "final_dashboard_data.parquet"
+
 @st.cache_data
 def load_data():
-    return pd.read_parquet("final_dashboard_data.parquet")
+    return pd.read_parquet(DATA_PATH)
 
 df = load_data()
 
