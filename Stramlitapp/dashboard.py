@@ -14,6 +14,11 @@ DATA_PATH = BASE_DIR / "final_dashboard_data.parquet"
 def load_data():
     return pd.read_parquet(DATA_PATH)
 
+st.write("Running file:", __file__)
+st.write("Base dir:", BASE_DIR)
+st.write("Data path:", str(DATA_PATH))
+st.write("Exists:", DATA_PATH.exists())
+
 df = load_data()
 
 # -----------------------
