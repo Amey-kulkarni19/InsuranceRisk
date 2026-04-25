@@ -9,8 +9,8 @@ REPO_DIR = BASE_DIR.parent
 
 @st.cache_data
 def load_data():
-    DATA_PATH_1 = BASE_DIR / "final_dashboard_data.parquet"
-    DATA_PATH_2 = REPO_DIR / "final_dashboard_data.parquet"
+    DATA_PATH_1 = BASE_DIR / "final_dashboard_data_agg.parquet"
+    DATA_PATH_2 = REPO_DIR / "final_dashboard_data_agg.parquet"
     if DATA_PATH_1.exists():
         return pd.read_parquet(DATA_PATH_1)
     elif DATA_PATH_2.exists():
